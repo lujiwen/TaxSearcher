@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/TouchSlide.1.1.js"></script>
+	<script type="text/javascript">
+		document.addEventListener("deviceready", onDeviceReady, false);
+ 
+	function onDeviceReady() {
+	// 注册回退按钮事件监听器
+		document.addEventListener("backbutton", onBackKeyDown, false); 
+	}
+	
+	function onBackKeyDown() {
+     exitApp();
+    }
+	</script>
+</head>
+
+<body>
+<div class="main">
+    <header><span>全国发票查询</span></header>
+   <div class="content clear">
+       <div id="slideBox" class="slideBox">
+           <div class="bd">
+               <ul>
+                   <li>
+                       <a class="pic" href="#"><img src="images/banner2.jpg" /></a>
+                       <div class="tit tbg1">
+                           <p>
+                               <span>多地多类税票查询</span>
+                               <span>对接多地税票查询网站</span>
+                           </p>
+
+                       </div>
+                   </li>
+                   <li>
+                       <a class="pic" href="#"><img src="images/banner1.jpg"/></a>
+                       <div class="tit tbg2">
+                           <p>
+                               <span>税票查询结果二次归类</span>
+                               <span>注册用户可对查询结果进行归类存储</span>
+                           </p>
+
+                       </div>
+                   </li>
+                   <li>
+                       <a class="pic" href="#"><img src="images/banner3.jpg"/></a>
+                       <div class="tit tbg3">
+                           <p>
+                               <span>多平台查验方式</span>
+                               <span>网站手机端均可查询方便快捷</span>
+                           </p>
+
+                       </div>
+                   </li>
+               </ul>
+           </div>
+
+           <div class="hd">
+               <ul></ul>
+           </div>
+       </div>
+       <div class="model clear">
+            <a href="chaxun_page.html">
+                <span><img src="images/icon1.png"/></span>
+                <span>发票查询</span>
+            </a>
+           <a href="record.html">
+               <span><img src="images/icon2.png"/></span>
+               <span>我的查询</span>
+           </a>
+           <a href="problem.html">
+               <span><img src="images/icon3.png"/></span>
+               <span>常见问题</span>
+           </a>
+       </div>
+
+   </div>
+</div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html" class="home-cur1">
+        <span><img src="images/5.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html">
+        <span><img src="images/2.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html">
+        <span><img src="images/4.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        window.onload = function()
+        {
+            var $nav = $('.tab-nav li');
+            var $content = $('#content dl');
+            $nav.mouseover(function(){
+                var $this = $(this);
+                var $t = $this.index();
+                $nav.removeClass();
+                $this.addClass('cur');
+                $content.css('display','none');
+                $content.eq($t).css('display', 'block');
+            })
+        }
+    });
+    TouchSlide({
+        slideCell:"#slideBox",
+        titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell:".bd ul",
+        effect:"leftLoop",
+        autoPage:true,//自动分页
+        autoPlay:true //自动播放
+    });
+</script>
+
+</body>
+</html>

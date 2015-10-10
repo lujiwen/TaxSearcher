@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台-用户中心</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery-1.7.1.min.js"></script>
+	<link rel="stylesheet" href="js/jDialog/jDialog.css" type="text/css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jDialog.js"></script>
+  <script src="js/cordova.js"></script>  
+	<script type="text/javascript">
+	function exitApp()
+	{
+	  if(navigator.app){
+		 navigator.app.exitApp();
+	  }else if(navigator.device){
+		navigator.device.exitApp();
+	  }
+	  
+	}
+	function loginStatusCheck()
+    {
+	     var isLogin = sessionStorage.getItem("isLogin");
+		  if(isLogin=="true")
+		  {
+		     $("div#login").hide();			 
+			// document.getElementById("div#login").value=   "山哥哥";// sessionStorage.getItem("username");
+	 
+		     $("div#logout").show();
+		  } 
+		  else 
+		  {
+		  	 $("div#login").show();
+			  
+		     $("div#logout").hide();
+		  }
+    }
+	function logout()
+	{
+		 sessionStorage.setItem("isLogin","false");
+		 sessionStorage.setItem("phone","");
+		 sessionStorage.setItem("username","");
+	    var dialog = jDialog.alert('已经退出登录！',{},{
+		showShadow: false,// 不显示对话框阴影
+		buttonAlign : 'center',
+		events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				  location.reload() ;
+			},
+			enterKey : function(evt){
+			//	alert('enter key pressed!');
+			},
+			escKey : function(evt){
+			//	alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+	  });
+       
+	}
+	
+	document.addEventListener("deviceready", onDeviceReady, false);
+ 
+	function onDeviceReady() {
+	// 注册回退按钮事件监听器
+		document.addEventListener("backbutton", onBackKeyDown, false); 
+	}
+	
+	function onBackKeyDown() {
+        	 var dialog = jDialog.confirm('点击确定退出程序！',{
+			handler : function(button,dialog) {
+			    exitApp();
+				dialog.close();
+			}
+		},{
+			handler : function(button,dialog) {
+				dialog.close();
+				return ;
+			}
+		});
+    }
+	</script>
+</head>
+
+<body onLoad="loginStatusCheck()">
+<div class="main">
+    <header><span>用户中心</span></header>
+    <!---用户中心------->
+    <div class="content">
+        <div class="user-header">
+            <div class="head1"><img src="images/userbg1.png"></div>
+            <div class="logo"><img src="images/logo.png"></div>
+		 
+            <div  id="login" class="head2"><a href="login.html">登录</a></div>
+			
+			 <div id="logout" class="head2"><a onClick="logout()" >注销登录</a></div>
+			<!-- <div id="exit" class="head2"><a onClick="exitApp()" >退出程序</a></div>-->
+        </div>
+        <div class="head-list">
+            <a href="record.html" class="clear">
+                <span>查验记录</span>
+                <i><img src="images/tips5.png"></i>
+            </a>
+            <a href="password_edit.html" class="clear">
+                <span>修改密码</span>
+                <i><img src="images/tips5.png"></i>
+            </a>
+            <a href="problem.html" class="clear">
+                <span>帮助中心</span>
+                <i><img src="images/tips5.png"></i>
+            </a>
+            </div>
+    </div>
+</div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html" >
+        <span><img src="images/1.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html" class="home-cur1">
+        <span><img src="images/6.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html">
+        <span><img src="images/4.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+
+
+</body>
+</html>

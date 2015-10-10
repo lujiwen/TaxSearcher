@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台-注册</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="js/jDialog/jDialog.css" type="text/css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jDialog.js"></script>
+    <script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/jquery.json.js"></script>
+		<script src="js/cordova.js"></script>
+		<script src="js/utils.js" language="javascript"></script> 
+	<script>
+	function registInputCheck()
+{
+		phoneLength =trim($("input#phone").val()).length;
+	    mailLength = trim($("input#mail").val()).length;
+	    passwordLength = trim($("input#password").val()).length
+	    comfirmPasswordlength = trim($("input#comfirmPassword").val()).length ;
+		if((phoneLength==0)||(mailLength==0)||(passwordLength==0)||(comfirmPasswordlength==0))
+		{
+			return("任意一项不得为空!");
+		}
+		else if(trim($("input#password").val())!=trim($("input#comfirmPassword").val()))
+		{
+			return("两次密码输入不一致！")
+		}
+		else return "";
+		
+}
+
+	function exitApp()
+	{
+	  if(navigator.app){
+		 navigator.app.exitApp();
+	  }else if(navigator.device){
+		navigator.device.exitApp();
+	  }
+	}
+	 document.addEventListener("deviceready", onDeviceReady, false);
+ 
+	function onDeviceReady() {
+	// 注册回退按钮事件监听器
+		document.addEventListener("backbutton", onBackKeyDown, false); 
+	}
+	
+	function onBackKeyDown() {
+     	 var dialog = jDialog.confirm('点击确定退出程序！',{
+			handler : function(button,dialog) {
+			    exitApp();
+				dialog.close();
+			}
+		},{
+			handler : function(button,dialog) {
+				dialog.close();
+				return ;
+			}
+		});
+    }
+	 function regist()
+	{
+		var alertStr = registInputCheck();
+		if(alertStr!="")
+		{
+		      	var dialog = jDialog.alert(alertStr,{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+		    	show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+			    return ;
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+		}
+		else 
+		{
+			var phone = $("input#phone").val();
+			var mail = $("input#mail").val();
+			var password = $("input#password").val();
+			var addr = $("input#addr").val();
+			var valnum = $("input#valnum").val();
+		   $.ajax({  
+				url : serverURL+"/register"  ,  
+				type : 'POST', 
+				async: true, // 使用同步方式  
+				data : JSON.stringify({ 'username': phone, 'password': password , 'phone': phone , 'addr': addr , 
+		                                'mail': mail ,'mail_code':valnum }),   	 
+				dataType : 'JSON',  
+				contentType : 'application/json; charset=utf-8',  
+				success : function(data, status, xhr) {  
+					if(data.msg=="succeed")
+					{
+						//setCookie("username",data.detail)				
+							var dialog = jDialog.alert(data.detail,{},{
+		                    showShadow: false,// 不显示对话框阴影
+		                    buttonAlign : 'center' ,
+				            events : {
+							show : function(evt){
+								var dlg = evt.data.dialog;
+							},
+							close : function(evt){
+								var dlg = evt.data.dialog;
+									window.location.href="index.html";
+							},
+							enterKey : function(evt){
+								//alert('enter key pressed!');
+							},
+							escKey : function(evt){
+								//alert('esc key pressed!');
+								evt.data.dialog.close();
+							}
+						}
+				      });
+					}
+					else 
+					{
+				         var dialog = jDialog.alert(data.detail,{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				 //	window.location.href="index.html";
+				 return ;
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+					}         
+      			  },  
+				Error : function(xhr, error, exception) {  
+					// handle the error.    
+					var dialog = jDialog.alert(exception.toString(),{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				 //	window.location.href="index.html";
+				 return ;
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+					
+			  }  
+		    })//end ajax 
+	}
+	} 
+ 	function mailcode()
+	{  
+       var mail = $("input#mail").val();
+	   if(trim($("input#mail").val()).length==0)
+	   {
+	        var dialog = jDialog.alert("邮箱输入错误",{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				 //	window.location.href="index.html";
+				 return ;
+			}
+		}
+	});
+	   }   //end if 
+	   else 
+	   {
+	    $.ajax({  
+				url : serverURL+"/mail_code"  ,  
+				type : 'POST', 
+				async: true, // 使用同步方式  
+				data : JSON.stringify({ 'email': mail}),   	 
+				dataType : 'JSON',  
+				contentType : 'application/json; charset=utf-8',  
+				 beforeSend : function(){
+					   $('#load').fadeIn();
+					},
+					complete :function (){
+						  $('#load').fadeOut();
+					},
+				success : function(data, status, xhr) {  
+               var dialog = jDialog.alert(data.detail,{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				 //	window.location.href="index.html";
+				 return ;
+			}
+		}
+	});  
+      			  },
+				Error : function(xhr, error, exception) {  
+					// handle the error.    
+				var dialog = jDialog.alert(exception.toString(),{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				 //	window.location.href="index.html";
+				 return ;
+			}
+		}
+	});  
+			  }  
+		    })//end ajax 
+	   }
+ }
+ 
+	</script>
+	<style type="text/css">
+ body {  height: 100%;  padding: 0px;  margin: 0px;  }
+        .main-body {  margin: 0;  padding: 0;  overflow-x: hidden;  -webkit-text-size-adjust: none;  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  -webkit-user-select: none  }
+        .main-body {  top: 0;  left: 0;  width: 100%;  min-height: 100%;  max-height: 100%;  position: absolute;  border: 0  }
+#load{position:absolute;width:100%;color:#999;font-size:1em;height:100%;opacity: 0.3;background: #000000;top:0;left:0;z-index: 99999;}
+.loadimg {width:30%;height: 3em;margin:70% auto;z-index: 99999999;position: relative;text-align: center; }
+</style>
+</head>
+
+<body onLoad="javascript:$('#load').hide();">
+ 
+<div  class="main-body" class="main">
+    <header><a href="#"><img src="images/back.jpg"  onClick="window.history.back(); return false;"/></a> <span>注册中心</span></header>
+    <!---注册------->
+    <div class="content">
+        <div class="login">
+            <div class="re-name re1">
+                <input id="phone" type="text" class="login-put1" placeholder="手机号"/>
+                <span>*</span>
+            </div>
+            <div class="re-name re2 clear">
+                <input id="mail" type="text" class="re-put1" placeholder="输入邮箱"/>
+                <span>*</span>
+                <a onClick="mailcode()" id="mail_code" href="#">获取验证码</a>
+            </div>
+            <div class="re-name re3">
+                <input id="valnum" type="text" class="login-put1" placeholder="输入验证码"/>
+                <span>*</span>
+            </div>
+			<div class="re-name re5">
+                <input id="addr" type="text" class="login-put1" placeholder="公司名称"/>
+                <span>*</span>
+            </div>
+            <div class="re-name re4">
+                <input id="password" type="password" class="login-put1" placeholder="设置密码"/>
+                <span>*</span>
+            </div>
+            <div class="re-name re4">
+                <input id="comfirmPassword" type="password" class="login-put1" placeholder="确认密码"/>
+                <span>*</span>
+            </div>
+			 
+            <div class="login-but">
+                <input onClick="regist()" id="regist_btn" type="submit" value="立即注册" class="login-submit" />
+            </div>
+            <div class="login-back">欢迎您注册会员，如果您已拥有账户，则可在此 <a href="login.html"> 登录</a></div>
+        </div>
+    </div>
+</div>
+<div id="load" align="center"><div class="loadimg"><img src="images/loading.gif" width="28" height="28" align="absmiddle"/>加载中...</div></div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html">
+        <span><img src="images/1.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html">
+        <span><img src="images/2.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html">
+        <span><img src="images/4.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+
+
+</body>
+</html>

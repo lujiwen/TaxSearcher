@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台-常见问题</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+	<script src="js/cordova.js"></script>
+   <script src="js/jquery-1.7.1.min.js"></script>
+		<link rel="stylesheet" href="js/jDialog/jDialog.css" type="text/css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jDialog.js"></script>
+	  <script src="js/cordova.js"></script>  
+<!-- 	<script src="js/jquery.mobile-1.3.2.min.js"></script>-->
+<script type="text/javascript">
+	function exitApp()
+	{
+	  if(navigator.app){
+		 navigator.app.exitApp();
+	  }else if(navigator.device){
+		navigator.device.exitApp();
+	  }
+	  
+	}
+   document.addEventListener("deviceready", onDeviceReady, false);
+ 
+	function onDeviceReady() {
+	// 注册回退按钮事件监听器
+		document.addEventListener("backbutton", onBackKeyDown, false); 
+	}
+	
+	function onBackKeyDown() {
+       	 var dialog = jDialog.confirm('点击确定退出程序！',{
+			handler : function(button,dialog) {
+			    exitApp();
+				dialog.close();
+			}
+		},{
+			handler : function(button,dialog) {
+				dialog.close();
+				return ;
+			}
+		});
+    }
+</script>
+</head>
+
+
+<body>
+<div class="main">
+    <header><a href="#"><img src="images/back.jpg" onClick="window.history.back(); return false;"/></a> <span>帮助</span></header>
+    <!---常见问题------->
+    <div class="content">
+        <div class="pr-list">
+		 
+            <h1>用户如何注册及注册后有什么功能？</h1>
+            <p>答：在“用户登录”区点击“注册”按钮进行注册，注册时要求输入手机号作为登陆账号，通过输入的邮箱号，进行验证通过后即可完成注册。
+                用户注册后，可进行发票查询并且可对查询结果进行自行判断保存在查询历史记录中，进行查看。</p>
+        </div>
+        <div class="pr-list pr-top">
+            <h1>发票的查验方式</h1>
+            <p>回答：发票可以在 “发票查询”栏目中进行查询，也可以在成都锦江区国税局
+                发票真伪统一查询平台的网上(http://211.149.242.82:8080/invoice/)查询验证发票信息，如提供的发票信息查询结果不一致时，以当地税务局网站为准。</p>
+        </div>
+
+    </div>
+</div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html">
+        <span><img src="images/1.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html">
+        <span><img src="images/2.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html" class="home-cur1">
+        <span><img src="images/8.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+
+
+</body>
+</html>

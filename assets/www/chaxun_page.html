@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台-查询页面</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="js/jDialog/jDialog.css" type="text/css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jDialog.js"></script>
+    <script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/utils.js"  script type="text/javascript" charset="gbk"></script>
+     <script src="js/cordova.js"></script>  
+	<script type="text/javascript">
+	function exitApp()
+	{
+		  if(navigator.app){
+			 navigator.app.exitApp();
+		  }else if(navigator.device){
+			navigator.device.exitApp();
+		  }	  
+	}
+	document.addEventListener("deviceready", onDeviceReady, false);
+ 
+	function onDeviceReady() {
+	// 注册回退按钮事件监听器
+		document.addEventListener("backbutton", onBackKeyDown, false); 
+	}
+	
+	function onBackKeyDown() {
+    	 var dialog = jDialog.confirm('点击确定退出程序！',{
+			handler : function(button,dialog) {
+			    exitApp();
+				dialog.close();
+			}
+		},{
+			handler : function(button,dialog) {
+				dialog.close();
+				return ;
+			}
+		});
+    }
+	function inputCheck(type)
+{
+	fpdmLength =trim($("input#code").val()).length;
+	fphmLength = trim($("input#num").val()).length;
+	fpmmLength = trim($("input#fp_password").val()).length
+	 enolength = trim($("input#eno").val()).length ;
+	switch(type)
+	{
+		case "sc_national":
+         if((fpdmLength!=12)||(fphmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		 
+		break;
+		case "sc_local":
+          if((fpdmLength!=12)||(fphmLength!=8)||(fpmmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		 
+		break;
+		case "yn_national":
+         if((fpdmLength!=10)||(fphmLength!=8)||(fpmmLength!=15))
+		 {
+			 return('输入有误！');
+		 }
+		 
+		break;
+		case "yn_check":
+
+        if((fpdmLength!=12)||(fphmLength!=8)||(enolength!=15))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "bj_national":
+          if((fpdmLength!=12)||(fphmLength!=8)||(fpmmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "cq_national":
+         if((fpdmLength!=12)||(fphmLength!=8) )
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "cq_flow":
+ 		if((fpdmLength!=12)||(fphmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		break; 
+		case "cq_named":
+             
+		break; 
+ 
+		case "cq_added":
+         if((fpdmLength!=10)||(fphmLength!=8)||(enoLength!=15))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "cq_printed":
+         if((fpdmLength!=12)||(fphmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "cq_quota":
+         if((fpdmLength!=12)||(fphmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		break ;
+		 
+		case "gd_national":
+         if((fpdmLength!=12)||(fphmLength!=8)||(enoLength!=15))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "gd_flow":
+         if((fpdmLength!=10)||(fphmLength!=8))
+		 {
+			 return('输入有误！');
+		 }
+		break;
+		case "gd_network":
+ 
+		break;
+	}
+      return("");
+}
+	function onSelectArea()
+	{
+	      var area_select=document.getElementById("area");
+		  var type_select=document.getElementById("tax_type");
+          var area =  area_select.options[area_select.selectedIndex].value
+		   
+		   clearSelect(type_select);//先清空
+	       switch(area)
+		   {
+		     case 'sc':  
+			  jsAddItemToSelect(type_select,'国税-普通发票',"sc_national");
+			  jsAddItemToSelect(type_select,'地税-通用发票',"sc_local");
+			 break ;
+			 case 'gd':
+			  jsAddItemToSelect(type_select,"国税-通用发票","gd_national");
+			  jsAddItemToSelect(type_select,"国税-网络发票","gd_network");
+			  jsAddItemToSelect(type_select,"国税-发票流向","gd_flow"); 
+			 break ;
+			 case 'yn':
+			  jsAddItemToSelect(type_select,"国税-增值税发票","yn_national");
+			  jsAddItemToSelect(type_select,"国税-普通发票","yn_check");
+			 break ;
+			 case 'bj': 
+			  jsAddItemToSelect(type_select,"北京-通用发票","bj_national");
+			 break ;
+			 case 'cq': 
+			  jsAddItemToSelect(type_select,"国税-网络发票","cq_national"); 
+			  jsAddItemToSelect(type_select,"国税-发票流向","cq_flow");
+			  jsAddItemToSelect(type_select,"国税-冠名发票","cq_named");
+			  jsAddItemToSelect(type_select,"国税-增值税发票","cq_added");
+			  jsAddItemToSelect(type_select,"地税-机打发票","cq_printed");
+			  jsAddItemToSelect(type_select,"地税-定额发票","cq_quota");
+			 break ;
+		   }
+		   optionnal_show(); //更新下面要显示的内容
+	}
+	function optionnal_show()
+{ 
+	var type_select=document.getElementById("tax_type");  
+	var type =  type_select.options[type_select.selectedIndex].value;  
+	$("div#date").hide();
+	switch(type)
+	{
+		case "sc_national":
+		$("div#fpmm").hide();
+		$("div#status").hide();
+		$("div#fpvalue").hide();
+		$("div#eno").hide();
+		$("div#money").hide();
+		$("div#ename").hide();
+		break;
+		case "sc_local":
+		$("div#fpmm").show();
+		$("div#status").hide();
+		$("div#fpvalue").show();
+		$("div#eno").hide();
+		$("div#money").hide();
+		$("div#ename").hide();
+		break;
+		case "yn_national":
+		$("div#status").hide();
+		$("div#fpvalue").hide();
+ 		$("div#fpmm").hide();
+		$("div#money").hide();
+		$("div#ename").hide();
+		$("label#eno_label").html("开票方税务登记号"); 
+		$("input#eno").attr('placeholder','开票方税务登记号')
+		break;
+		case "yn_check":
+		$("div#status").hide();
+		$("div#fpvalue").show();
+ 		$("div#fpmm").hide();
+		$("div#ename").hide();
+		$("label#fpvalue_label").html("发票金额"); 
+		$("input#money").attr('placeholder','发票金额')
+		break;
+		case "bj_national":
+ 		$("div#eno").hide();
+		$("div#ename").hide();
+		$("div#money").hide();
+		$("div#fpvalue").hide();
+		$("div#status").show();
+		$("label#optionnal_status").html("是否第一次查询"); 
+		break;
+		case "cq_national":
+		$("div#fpmm").hide();
+		$("div#status").hide();
+	 	$("div#fpvalue").show();
+		$("div#name").show();
+		$("div#eno").hide();
+		break;
+		case "cq_flow":
+	    $("div#fpmm").hide();
+	//	$("div#status").hide();
+	 	$("div#fpvalue").hide();
+		$("div#eno").hide();
+		$("div#payer").hide();
+		$("div#ename").show();
+		$("div#status").show();
+		$("label#optionnal_status").html("税务机关代开"); 
+		
+		break; 
+		case "cq_named":
+	    $("div#fpmm").hide();
+	 	$("div#status").hide();
+	 	$("div#fpvalue").hide();
+		$("div#eno").hide();
+		$("div#payer").hide();
+		$("div#ename").show();
+		$("div#status").hide();
+		$("label#payer_label").html("开票方名称"); 
+		break; 
+ 
+		case "cq_added":
+        $("div#fpmm").show();
+		$("div#status").hide();
+		$("div#fpvalue").show();
+		$("div#eno").show();
+		$("div#ename").hide();
+		$("div#date").show();
+		//$("label#fpmm_label").html("开票日期 "); 
+		//$("input#fp_password").attr('placeholder','开票日期 2015-05-23 ')
+		$("label#eno_label").html("开具方识别号"); 
+		$("input#eno").attr('placeholder','开具方识别号')
+		break;
+		case "cq_printed":
+        $("div#fpmm").hide();
+		$("div#status").hide();
+		$("div#fpvalue").show();
+		$("div#eno").hide();
+		$("div#ename").show();
+		//$("label#fpmm_label").html("开票日期 "); 
+		$("input#fp_password").attr('placeholder','开票日期 2015-05-23 ')
+		//$("label#eno_label").html("开具方识别号"); 
+		//$("input#eno").attr('placeholder','开具方识别号')
+		break;
+		case "cq_quota":
+		 $("div#fpmm").hide();
+	 	$("div#status").hide();
+	 	$("div#fpvalue").hide();
+		$("div#eno").hide();
+		$("div#payer").hide();
+		$("div#ename").hide();
+		$("div#status").hide();
+		break ;
+		 
+		case "gd_national":
+        $("div#fpmm").hide();
+		$("div#status").hide();
+	 	$("div#eno").show();
+		$("div#fpvalue").show();
+	 	$("div#ename").show();
+		$("div#date").show();
+		$("label#fpvalue_label").html("税额"); 
+		$("input#money").attr('placeholder','税额')
+		break;
+		case "gd_flow":
+        $("div#fpmm").hide();
+		$("div#status").hide();
+		$("div#fpvalue").hide();
+		$("div#eno").hide();
+		$("div#money").hide();
+		$("div#ename").hide();
+		$("div#date").hide();
+		break;
+		case "gd_network":
+        $("div#fpmm").hide();
+		$("div#status").hide();
+ 		$("div#fpvalue").show();
+		$("label#fpvalue_label").html("发票金额"); 
+		$("input#money").attr('placeholder','发票金额')
+		$("div#eno").hide();
+		$("div#date").hide();
+	 	$("div#ename").show();
+		$("label#payer_label").html("发票所属区域"); 
+		$("input#payer").attr('placeholder','发票所属区域');
+		break;
+	}
+}
+	function query()
+	{ 
+			var area_select=document.getElementById("area");  
+			var area_value =  area_select.options[area_select.selectedIndex].value;  
+		//	var bureau_select=document.getElementById("tax_bureau");  
+		
+			var type_select=document.getElementById("tax_type");  	
+			var type_value =  type_select.options[type_select.selectedIndex].value;  
+			
+			var status_select=document.getElementById("status_select");  
+		    var status_value =  status_select.options[status_select.selectedIndex].value;  
+			var nowDate = new Date() ;
+	        var phone =  sessionStorage.getItem("phone");
+	        var taxtype = type_value ;
+			var fpdm =  $("input#code").val();//$("#input#code").val();
+			var fphm = 	$("input#num").val();
+	        var fpmm =  $("input#fp_password").val();;
+			var valnum = $("input#random_code").val();
+			var eno = $("input#eno").val(); 
+	        var fpvalue = $("input#money").val();;
+			var ename =  $("input#payer").val();;
+		    var date =   nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate() //2015-05-09;
+	        var checked =  status_value;
+			 
+			 var alertStr = inputCheck(type_value) ; 
+			 if(alertStr!="")
+			 {
+			     //alert(alertStr);
+				 var dialog = jDialog.alert( alertStr,{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				//window.location.href="index.html";
+				return ;
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+	});
+		         return ;
+			 }
+	        $.ajax({  
+				url : serverURL+"/query"  ,  
+				type : 'POST', 
+				async: true, // 使用同步方式  
+					data : JSON.stringify({'phone':phone,'taxtype':taxtype,'fpdm':fpdm ,'fphm':fphm,'fpmm':fpmm,'valnum':valnum,                                            'eno':eno,'fpvalue':fpvalue,'ename':ename,'date':
+	                                          date,'checked':checked}),   	 
+				dataType : 'JSON',  
+				contentType : 'application/json; charset=utf-8',  
+				beforeSend : function(){
+				   $('#load').fadeIn();
+				},
+				complete :function (){
+                      $('#load').fadeOut();
+				},
+				success : function(data, status, xhr) {  
+					if(data.msg=="succeed")
+					{							
+						sessionStorage.setItem("fphm",  fphm); 
+						sessionStorage.setItem("fpdm",  fpdm); 
+						sessionStorage.setItem("queryResult",  data.detail); 
+						sessionStorage.setItem("fptype", type_value); 
+						window.location.href="chaxun_result.html";
+						//alert(sessionStorage.getItem("queryResult")); 
+					}
+					else 
+					{
+						//alert(); 
+						 var dialog = jDialog.alert(data.detail,{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+			//	window.location.href="index.html";
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+						//window.location.href="chaxun_result.html";
+					}         
+      			  },  
+				Error : function(xhr, error, exception) {  
+					// handle the error.    
+					alert(exception.toString());  
+			  }  
+		    })//end ajax 
+	}
+	
+	var last_click_time;
+	
+	function randomCodeTip()
+	{
+	   var ph = $("input#random_code").getAttribute('placeholder');
+		
+		$("input#random_code").attr('placeholder','请等待,点击重新获取！');
+	}
+	
+	//获取验证码
+	function verify_code()
+	{
+	    var click_time= new Date();
+	//	$("input#random_code").attr('placeholder','请等待,点击重新获取！');
+
+		if(last_click_time!=null) //不是第一次点击 ，计算时间差
+		{
+		      var diff = click_time.getTime() - last_click_time.getTime() ;
+			  if(diff<5000)//大于5秒，才可以重新生成
+			  {
+			   	//  alert("请稍后再点击！");
+				var dialog = jDialog.alert('请稍后再点击！',{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+				$("input#random_code").focus();
+					  return ;
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+			  }
+		} //end if  
+		last_click_time = new Date();
+	    var type_select=document.getElementById("tax_type");  
+		var type_value =  type_select.options[type_select.selectedIndex].value;  
+	     var  phone = sessionStorage.getItem("phone");
+		 $('#query').attr("value","验证码获取中...");
+		 $("input#random_code").attr("placeholder","验证码获取中...");
+ 		document.getElementById("verify_code_img").src = ""; 
+		// $("img#verify_code_img").attr('src',"images/loading_valnum.jpg");
+		 var url = serverURL+"/valnum"+"/"+type_value+"/"+phone+"/"+(Math.random()*10);
+	    //document.getElementById("verify_code_img").src = url+Date(); ;
+         $("img#verify_code_img").attr("src",url);
+         $("input#random_code").focus(); 
+		 ////
+		 $('#verify_code_img').load(function(){
+			$('#query').attr("value","查询");
+			  $("input#random_code").attr("placeholder","随机码");
+	     }).error(function() {
+	    	 $('#query').focus();
+			$('#query').attr("value","验证码获取失败");
+			$("input#random_code").attr("placeholder","点击图片重新获取");
+	       return false;
+	     });
+ 
+	}
+	$(document).ready(function()
+	  {
+/*	     $("img#verify_code_img").click(function()
+			 {
+				verify_code()       
+			 }
+		 ) ,*/
+		 $("input#query").click(function()
+			 {
+				   query();
+			 }
+		 ) 
+	 });
+	 
+	function isLogin()
+	{
+	     $('div#load').hide();
+	     if(sessionStorage.getItem("isLogin")!="true")
+		 {
+		      var dialog = jDialog.alert('请先登录！',{},{
+		        showShadow: false,// 不显示对话框阴影
+		        buttonAlign : 'center' ,
+				events : {
+			show : function(evt){
+				var dlg = evt.data.dialog;
+			},
+			close : function(evt){
+				var dlg = evt.data.dialog;
+			    window.location.href="login.html";
+			},
+			enterKey : function(evt){
+				//alert('enter key pressed!');
+			},
+			escKey : function(evt){
+				//alert('esc key pressed!');
+				evt.data.dialog.close();
+			}
+		}
+				});
+		     
+		 }
+		 else 
+		 {
+		     resetAll();
+		 }
+	}
+</script>
+<style type="text/css">
+ body {  height: 100%;  padding: 0px;  margin: 0px;  }
+        .main-body {  margin: 0;  padding: 0;  overflow-x: hidden;  -webkit-text-size-adjust: none;  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  -webkit-user-select: none  }
+        .main-body {  top: 0;  left: 0;  width: 100%;  min-height: 100%;  max-height: 100%;  position: absolute;  border: 0  }
+#load{position:absolute;width:100%;color:#999;font-size:1em;height:100%;opacity: 0.3;background: #000000;top:0;left:0;z-index: 99999;}
+.loadimg {width:30%;height: 3em;margin:70% auto;z-index: 99999999;position: relative;text-align: center; }
+</style>
+</head>
+
+<body  class="main-body" onLoad="isLogin()">
+
+<div class="main">
+    <header><a href="#"><img src="images/back.jpg"  onClick="window.history.back(); return false;" /></a> <span>发票查询</span></header>
+    <!---发票查询------->
+    <div class="content clear">
+        <div class="cp-tips">请根据需要 选择及录入相关信息！</div>
+        <div class="cp-select">
+            <div class="cp-s-list clear">
+                <label>地<span></span>区:</label>
+                <section>
+                    <select  id="area"   onChange="onSelectArea()" >
+						<option  selected="true" disabled="true" value="unselected" >请选择地区</option>
+                        <option value="cq" >重庆</option>
+                        <option value="bj">北京</option>
+						<option value="sc">四川</option>
+                        <option value="gd">广东</option>
+						<option value="yn">云南</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+		      <div class="cp-select">
+             <div class="cp-s-list clear">
+                <label>税票类型:</label>
+                <section>
+                    <select id="tax_type" onChange="optionnal_show()">
+						<option selected="true" disabled="true" value="unselected" >请选择税票类型</option>
+                     	<option value="cq_national">国税-网络发票开具</option>
+						<option value="cq_flow">国税-发票流向</option>
+						<option value="cq_named">国税-冠名发票</option>
+						<option value="cq_added">国税-增值税发票票</option>
+						<option value="cq_printed">地税-机打发票</option>
+						<option value="cq_quota">地税-定额发票</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+<!--        <div class="cp-select">
+            <div class="cp-s-list clear">
+                <label>税<span></span>局:</label>
+                <section>
+                    <select id="tax_bureau">
+                        <option>重庆税局</option>
+                        <option>北京税局</option>
+                    </select>
+                </section>
+            </div>
+        </div>-->
+  
+        <div  class="cp-tips1">友情提示：请输入长度为10位或12位的发票代码！</div>
+             <div class="cp-select">
+            <div id="fpdm" class="cp-s-list clear">
+                <label>发票代码:</label>
+                <section>
+                    <input id="code" type="text"  placeholder="发票代码"/>
+                </section>
+            </div>
+        </div>
+        <div id="fphm" class="cp-select">
+            <div class="cp-s-list clear">
+                <label>发票号码:</label>
+                <section>
+                    <input id="num" type="text" name="" placeholder="发票号码"/>
+                </section>
+            </div>
+        </div>
+		<div id="fpmm" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="fpmm_label">发票密码:</label>
+                <section>
+                    <input id="fp_password" type="text"   placeholder="发票密码"/>
+                </section>
+            </div>
+        </div>
+	<div id="eno" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="eno_label">企业税务登记账号:</label>
+                <section>
+                    <input id="eno" type="text"   placeholder="企业税务登记账号"/>
+                </section>
+            </div>
+        </div>
+        <div id="ename" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="payer_label">付款方名称:</label>
+                <section>
+                    <input id="payer" type="text" name="" placeholder="付款方名称"/>
+                </section>
+            </div>
+        </div>
+
+        <div id="fpvalue" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="fpvalue_label">开票金额:</label>
+                <section>
+                    <input id="money" type="text" name="" placeholder="开票金额"/>
+                </section>
+            </div>
+        </div>
+		 <div id="status" class="cp-select">
+           <div class="cp-s-list clear">
+                <label id="optionnal_status">可选状态:</label>
+                <section>
+                    <select id="status_select">
+                     	<option value="true">是</option>
+						<option value="false">否</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+		 <div id="date" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="date_label">开票日期</label>
+                <section>
+                    <input  visibility="collapse" id="datepicker" type="date"/>
+                </section>
+            </div>
+        </div>
+        <div class="cp-select">
+            <div class="code clear">
+                <label>随机码:</label>
+                <section>
+                    <input  id="random_code" type="text" name="" placeholder="点击图片获取随机码"/>
+                    <span><img id="verify_code_img"  onChange="randomCodeTip()" onClick="verify_code()" src="images/loadingval.jpg" ></span>
+                </section>
+            </div>
+        </div>
+        <div class="cp-but">
+            <input id="query" type="submit" class="cp-submit" value="查询">
+            <input type="reset" class="cp-reset" value="重置" onClick="resetAll()">
+        </div>
+    </div>
+</div>
+<div id="load" align="center"><div class="loadimg"><img src="images/loading.gif" width="38" height="38" align="absmiddle"/>加载中...</div></div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html">
+        <span><img src="images/1.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html">
+        <span><img src="images/2.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html">
+        <span><img src="images/4.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+
+
+</body>
+</html>

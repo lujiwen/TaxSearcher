@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>全国发票查询平台-查询页面</title>
+    <meta name="keywords" content="全国发票查询平台">
+    <meta name="description" content="全国发票查询平台">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/utils.js"  script type="text/javascript"  charset="gbk" ></script>
+   <script src="js/cordova.js"></script>  
+	<script type="text/javascript">
+	function query()
+	{
+//	       if( !inputCheck())
+//		   {
+//		       return ;
+//		   }
+			var area_select=document.getElementById("area");  
+			var datePicker=document.getElementById("datepicker");  
+			var area_value =  area_select.options[area_select.selectedIndex].value;  
+		//	var bureau_select=document.getElementById("tax_bureau");  
+
+		
+			var type_select=document.getElementById("tax_type");  	
+			var type_value =  type_select.options[type_select.selectedIndex].value;  
+			
+			var status_select=document.getElementById("status_select");  
+		    var status_value =  status_select.options[status_select.selectedIndex].value;  
+			var nowDate = new Date() ;
+	        var phone = sessionStorage.getItem("phone");
+	        var taxtype = type_value ;
+			var fpdm =  $("input#code").val();//$("#input#code").val();
+			var fphm = 	$("input#num").val();
+	        var fpmm =  $("input#fp_password").val();;
+			var valnum = $("input#random_code").val();
+			var eno = $("input#eno").val(); 
+	        var fpvalue = $("input#money").val();;
+			var ename =  $("input#payer").val();;
+	 //     var date =   nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate() //2015-05-09;
+			//if(datePicker.style=="visible")
+		//	{
+			    date =  $("datepicker").val()  ;
+		//	}
+	        var checked =  status_value;
+			
+	        $.ajax({  
+				url : serverURL+"/query"  ,  
+				type : 'POST', 
+				async: true, // 使用同步方式  
+					data : JSON.stringify({'phone':phone,'taxtype':taxtype,'fpdm':fpdm ,'fphm':fphm,'fpmm':fpmm,'valnum':valnum,                                            'eno':eno,'fpvalue':fpvalue,'ename':ename,'date':
+	                                          date,'checked':checked}),   	 
+				dataType : 'JSON',  
+				contentType : 'application/json; charset=utf-8',  
+				success : function(data, status, xhr) {  
+					if(data.msg=="succeed")
+					{							
+						sessionStorage.setItem("fphm",  fphm); 
+						sessionStorage.setItem("fpdm",  fpdm); 
+						sessionStorage.setItem("queryResult",  data.detail); 
+						sessionStorage.setItem("fptype", type_value); 
+						resetAll();
+						window.location.href="chaxun_result.html";
+						//alert(sessionStorage.getItem("queryResult")); 
+						
+					}
+					else 
+					{
+						alert(data.detail); 
+						sessionStorage.lastname="Smith";
+						//window.location.href="chaxun_result.html";
+					}         
+      			  },  
+				Error : function(xhr, error, exception) {  
+					// handle the error.    
+					alert(exception.toString());  
+			  }  
+		    })//end ajax 
+	}
+	
+	var last_click_time;
+	
+	
+	//获取验证码
+	function verify_code()
+	{
+	    var click_time= new Date();
+		if(last_click_time!=null) //不是第一次点击 ，计算时间差
+		{
+		      var diff = click_time.getTime() - last_click_time.getTime() ;
+			  if(diff<5000)//大于5秒，才可以重新生成
+			  {
+			   	  alert("请稍后再点击！");
+				  return ;
+			  }
+		}
+		last_click_time = new Date();
+	    var type_select=document.getElementById("tax_type");  
+		var type_value =  type_select.options[type_select.selectedIndex].value;  
+	     var  phone = sessionStorage.getItem("phone");
+		 document.getElementById("verify_code_img").src = ''; 
+		 var url = serverURL+"/valnum"+"/"+type_value+"/"+phone+"/"+Math.random();
+	    //document.getElementById("verify_code_img").src = url+Date(); ;
+         $("img#verify_code_img").attr("src",url);
+	}
+	$(document).ready(function()
+	  {
+	     $("img#verify_code_img").click(function()
+			 {
+				verify_code()       
+			 }
+		 ) ,
+		 $("input#query").click(function()
+			 {
+				   query();
+			 }
+		 ) 
+	 });
+	 function isLogin()
+	{
+	     if(sessionStorage.getItem("isLogin")!="true")
+		 {
+		       window.location.href="login.html";
+		 }
+		 
+	}
+	</script>
+</head>
+
+<body onLoad="isLogin()">
+<div class="main">
+    <header><a href="#"><img src="images/back.jpg"  onClick="window.history.back(); return false;" /></a> <span>发票查询</span></header>
+    <!---发票查询------->
+    <div class="content clear">
+        <div class="cp-tips">请根据需要 选择及录入相关信息！</div>
+        <div class="cp-select">
+            <div class="cp-s-list clear">
+                <label>地<span></span>区:</label>
+                <section>
+                    <select  id="area"   onChange="onSelectArea()" >
+						<option value="unselected" >请选择地区</option>
+                        <option value="cq" >重庆</option>
+                        <option value="bj">北京</option>
+						<option value="sc">四川</option>
+                        <option value="gd">广东</option>
+						<option value="yn">云南</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+<!--        <div class="cp-select">
+            <div class="cp-s-list clear">
+                <label>税<span></span>局:</label>
+                <section>
+                    <select id="tax_bureau">
+                        <option>重庆税局</option>
+                        <option>北京税局</option>
+                    </select>
+                </section>
+            </div>
+        </div>-->
+ 
+        <div class="cp-select">
+            <div class="cp-s-list clear">
+                <label>税票类型:</label>
+                <section>
+                    <select id="tax_type" onChange="optionnal_show()">
+						<option value="unselected" >请选择税票类型</option>
+                     	<option value="cq_national">国税-网络发票开具</option>
+						<option value="cq_flow">国税-发票流向</option>
+						<option value="cq_named">国税-冠名发票</option>
+						<option value="cq_added">国税-增值税发票票</option>
+						<option value="cq_printed">地税-机打发票</option>
+						<option value="cq_quota">地税-定额发票</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+        <div  class="cp-tips1">友情提示：请输入长度为10位或12位的发票代码！</div>
+        <div class="cp-select">
+            <div id="fpdm" class="cp-s-list clear">
+                <label>发票代码:</label>
+                <section>
+                    <input id="code" type="text"  placeholder="发票代码"/>
+                </section>
+            </div>
+        </div>
+        <div id="fphm" class="cp-select">
+            <div class="cp-s-list clear">
+                <label>发票号码:</label>
+                <section>
+                    <input id="num" type="text" name="" placeholder="发票号码"/>
+                </section>
+            </div>
+        </div>
+		<div id="fpmm" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="fpmm_label">发票密码:</label>
+                <section>
+                    <input id="fp_password" type="password"   placeholder="发票密码"/>
+                </section>
+            </div>
+        </div>
+	<div id="eno" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="eno_label">企业税务登记账号:</label>
+                <section>
+                    <input id="eno" type="text"   placeholder="企业税务登记账号"/>
+                </section>
+            </div>
+        </div>
+        <div id="ename" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="payer_label">付款方名称:</label>
+                <section>
+                    <input id="payer" type="text" name="" placeholder="付款方名称"/>
+                </section>
+            </div>
+        </div>
+
+        <div id="fpvalue" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="fpvalue_label">开票金额:</label>
+                <section>
+                    <input id="money" type="text" name="" placeholder="开票金额"/>
+                </section>
+            </div>
+        </div>
+		 <div id="status" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="optionnal_status">可选状态:</label>
+                <section>
+                    <select id="status_select">
+                     	<option value="true">是</option>
+						<option value="false">否</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+		 <div id="date" class="cp-select">
+            <div class="cp-s-list clear">
+                <label id="date_label">开票日期</label>
+                <section>
+                    <input  visibility="collapse" id="datepicker" type="date"/>
+                </section>
+            </div>
+        </div>
+        <div class="cp-select">
+            <div class="code clear">
+                <label>随机码:</label>
+                <section>
+                    <input onClick="verify_code()"  id="random_code" type="text" name="" placeholder="随机码"/>
+                    <span><img id="verify_code_img"  onClick="verify_code()" src="images/vad.jpg" ></span>
+                </section>
+            </div>
+        </div>
+        <div class="cp-but">
+            <input id="query" type="submit" class="cp-submit" value="查询">
+            <input type="reset" class="cp-reset" value="重置" onClick="resetAll()">
+        </div>
+    </div>
+</div>
+<!---------------首页,排名,关注--------------------->
+<div class="home clear">
+    <a href="index.html">
+        <span><img src="images/1.png"/></span>
+        <span>主页</span>
+    </a>
+    <a href="record.html">
+        <span><img src="images/3.png"/></span>
+        <span>历史记录</span>
+    </a>
+    <a href="user_person.html">
+        <span><img src="images/2.png"/></span>
+        <span>个人中心</span>
+    </a>
+    <a href="problem.html">
+        <span><img src="images/4.png"/></span>
+        <span>帮助</span>
+    </a>
+</div>
+
+
+</body>
+</html>
